@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.sonarqube' version '3.4.0.2513'
+	id 'jacoco'
 }
 
 group = 'com.demo'
@@ -28,8 +30,36 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.google.api-client:google-api-client-jackson2:1.20.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport{
+	dependsOn test
+	reports {
+		xml.enabled(true)
+	}
+}
+
+jacoco{
+	toolVersion = '0.8.7'
+}
+
+sonarqube {
+	properties{
+		property 'sonar.issue.ignore.multicriteria', 'e1'
+		property 'sonar.issue.ignore.multicriteria.e1.ruleKey', 'java:S1135'
+		property 'sonar.issue.ignore.multicriteria.e1.ruleKey', 'java:S5786'
+		property 'sonar.issue.ignore.multicriteria.e1.resourceKey', '**/*.java'
+		property 'sonar.coverage.exclusions', '**/acl/erpmiddleware/dto/**, **/acl/generics/dto/**, **/domain/dto/**, **/domain/models/**, **/common/exceptions/**, **/service/orchestrator/utils/s3/domain/**, **/config/ConfigProperties.java, **/common/utils/TokenAuthorization.java, **/common/payload/**, **/TramitesServiceApplication.java'
+
+	}
 }

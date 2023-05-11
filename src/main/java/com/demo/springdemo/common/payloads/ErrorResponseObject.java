@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ErrorResponseObject<T>{
+public class ErrorResponseObject{
 
     private String message;
     private String date;

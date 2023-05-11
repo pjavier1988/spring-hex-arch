@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,5 +54,26 @@ public class PersonControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.size()", is(expectedistOfUsers.size())))
                 .andExpect(jsonPath("$.[0].userName", is("test1")));
+    }
+
+    @Test
+    public void shouldRetriveHttpStatusOKAndAersonObjectWhenPerformFindAllGetRequests() throws Exception {
+        Long givenId = 1L;
+
+        Person person = Person.builder()
+                .userId(givenId)
+                .userName("test1")
+                .fullName("Fullname1")
+                .build();
+
+
+
+
+        when(iPersonService.findUserById(anyLong())).thenAnswer(invocation -> person);
+
+        ResultActions resultActions = mockMvc.perform(get("/users/"+givenId));
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.userName", is("test1")));
     }
 }
